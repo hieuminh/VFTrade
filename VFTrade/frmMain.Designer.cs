@@ -64,16 +64,6 @@
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.dgvOrders = new System.Windows.Forms.DataGridView();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderVolume = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderMatch = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewButtonColumn2 = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -87,6 +77,16 @@
             this.txtFilePath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.grbDataSource = new System.Windows.Forms.GroupBox();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderVolume = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderMatch = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewButtonColumn2 = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -134,7 +134,7 @@
             this.btnTao.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnTao.BackColor = System.Drawing.Color.Transparent;
             this.btnTao.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnTao.Location = new System.Drawing.Point(1103, 15);
+            this.btnTao.Location = new System.Drawing.Point(498, 15);
             this.btnTao.Name = "btnTao";
             this.btnTao.Size = new System.Drawing.Size(75, 23);
             this.btnTao.TabIndex = 10;
@@ -279,7 +279,7 @@
             // 
             this.btnNopTienAll.BackColor = System.Drawing.Color.Transparent;
             this.btnNopTienAll.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnNopTienAll.Location = new System.Drawing.Point(1079, 6);
+            this.btnNopTienAll.Location = new System.Drawing.Point(445, 6);
             this.btnNopTienAll.Name = "btnNopTienAll";
             this.btnNopTienAll.Size = new System.Drawing.Size(107, 30);
             this.btnNopTienAll.TabIndex = 14;
@@ -448,67 +448,6 @@
             this.dgvOrders.TabIndex = 0;
             this.dgvOrders.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOrders_CellContentClick);
             // 
-            // dataGridViewTextBoxColumn3
-            // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn3.HeaderText = "STT";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 50;
-            // 
-            // orderDate
-            // 
-            this.orderDate.HeaderText = "Ngày";
-            this.orderDate.Name = "orderDate";
-            this.orderDate.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn4
-            // 
-            this.dataGridViewTextBoxColumn4.HeaderText = "User";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn5
-            // 
-            this.dataGridViewTextBoxColumn5.HeaderText = "Loại Lệnh";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            // 
-            // orderStock
-            // 
-            this.orderStock.HeaderText = "Mã CK";
-            this.orderStock.Name = "orderStock";
-            this.orderStock.ReadOnly = true;
-            // 
-            // orderPrice
-            // 
-            this.orderPrice.HeaderText = "Giá Đặt";
-            this.orderPrice.Name = "orderPrice";
-            this.orderPrice.ReadOnly = true;
-            // 
-            // orderVolume
-            // 
-            this.orderVolume.HeaderText = "Khối lượng";
-            this.orderVolume.Name = "orderVolume";
-            this.orderVolume.ReadOnly = true;
-            // 
-            // orderMatch
-            // 
-            this.orderMatch.HeaderText = "Giá Khớp";
-            this.orderMatch.Name = "orderMatch";
-            this.orderMatch.ReadOnly = true;
-            // 
-            // dataGridViewButtonColumn2
-            // 
-            this.dataGridViewButtonColumn2.HeaderText = "Thực hiện";
-            this.dataGridViewButtonColumn2.Name = "dataGridViewButtonColumn2";
-            this.dataGridViewButtonColumn2.ReadOnly = true;
-            // 
-            // dataGridViewTextBoxColumn6
-            // 
-            this.dataGridViewTextBoxColumn6.HeaderText = "Result";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
-            // 
             // groupBox2
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
@@ -543,7 +482,7 @@
             this.groupBox1.Size = new System.Drawing.Size(264, 145);
             this.groupBox1.TabIndex = 9;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Tài khoản Tạo";
+            this.groupBox1.Text = "Tài khoản Điều Khiển";
             // 
             // chkRemember
             // 
@@ -642,6 +581,83 @@
             this.grbDataSource.TabStop = false;
             this.grbDataSource.Text = "Data Source";
             // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewTextBoxColumn3.HeaderText = "STT";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Width = 50;
+            // 
+            // orderDate
+            // 
+            this.orderDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderDate.HeaderText = "Ngày";
+            this.orderDate.Name = "orderDate";
+            this.orderDate.ReadOnly = true;
+            this.orderDate.Width = 150;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewTextBoxColumn4.HeaderText = "User";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.Width = 150;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewTextBoxColumn5.HeaderText = "Loại Lệnh";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.Width = 70;
+            // 
+            // orderStock
+            // 
+            this.orderStock.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderStock.HeaderText = "Mã CK";
+            this.orderStock.Name = "orderStock";
+            this.orderStock.ReadOnly = true;
+            this.orderStock.Width = 80;
+            // 
+            // orderPrice
+            // 
+            this.orderPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderPrice.HeaderText = "Giá Đặt";
+            this.orderPrice.Name = "orderPrice";
+            this.orderPrice.ReadOnly = true;
+            this.orderPrice.Width = 80;
+            // 
+            // orderVolume
+            // 
+            this.orderVolume.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderVolume.HeaderText = "Khối lượng";
+            this.orderVolume.Name = "orderVolume";
+            this.orderVolume.ReadOnly = true;
+            this.orderVolume.Width = 110;
+            // 
+            // orderMatch
+            // 
+            this.orderMatch.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderMatch.HeaderText = "Giá Khớp";
+            this.orderMatch.Name = "orderMatch";
+            this.orderMatch.ReadOnly = true;
+            this.orderMatch.Width = 80;
+            // 
+            // dataGridViewButtonColumn2
+            // 
+            this.dataGridViewButtonColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewButtonColumn2.HeaderText = "Thực hiện";
+            this.dataGridViewButtonColumn2.Name = "dataGridViewButtonColumn2";
+            this.dataGridViewButtonColumn2.ReadOnly = true;
+            this.dataGridViewButtonColumn2.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            this.dataGridViewTextBoxColumn6.HeaderText = "Result";
+            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            this.dataGridViewTextBoxColumn6.ReadOnly = true;
+            // 
             // frmMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -727,6 +743,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn depositTKTong;
         private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn1;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn12;
+        private System.Windows.Forms.GroupBox grbDataSource;
+        private System.Windows.Forms.GroupBox grbThaoTac;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
         private System.Windows.Forms.DataGridViewTextBoxColumn orderDate;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
@@ -737,8 +755,6 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn orderMatch;
         private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
-        private System.Windows.Forms.GroupBox grbDataSource;
-        private System.Windows.Forms.GroupBox grbThaoTac;
     }
 }
 

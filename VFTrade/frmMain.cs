@@ -47,6 +47,12 @@ namespace VFTrade
             else
                 return;
 
+            if ( !Import.TestOpen(filePath) )
+            {
+                MessageBox.Show("Lỗi mở file excel, vui lòng save file excel và đóng chương trình Microsoft Excel");
+                return;
+            }
+
             try
             {
                 ListAccount = Import.Accounts(txtFilePath.Text.Trim());
@@ -266,6 +272,10 @@ namespace VFTrade
                 int success = 0;
                 for( int i=0;i<ListAccount.Count;++i)
                 {
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvAccounts[12, i].Value = "Đang tạo tài khoản ...";
+                    }));
                     var res = myManager.CreateAccount(ListAccount[i]);
                     this.Invoke(new ThreadStart(() => 
                     {
@@ -306,6 +316,10 @@ namespace VFTrade
                 int success = 0;
                 for (int i = 0; i < ListDeposits.Count; ++i)
                 {
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvDeposit[5, i].Value = "Đang nộp tiền ...";
+                    }));
                     var res = myManager.NopTien(ListDeposits[i]);
                     this.Invoke(new ThreadStart(() =>
                     {
@@ -325,6 +339,7 @@ namespace VFTrade
             });
         }
 
+        private bool IsIndividualOrder = true;
         private void btnPlaceOrderAllDay_Click(object sender, EventArgs e)
         {
             btnPlaceOrderAllDay.Enabled = false;
@@ -341,6 +356,8 @@ namespace VFTrade
                 return;
             }
 
+            IsIndividualOrder = false;
+
             Task.Factory.StartNew(() =>
             {
                 int success = 0;
@@ -353,10 +370,14 @@ namespace VFTrade
                         continue;
                     }
                     totalLenh += 1;
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvOrders[9, i].Value = "Đang đặt lệnh...";
+                    }));
                     var res = myManager.PlaceOrder(ListOrders[i]);
                     this.Invoke(new ThreadStart(() =>
                     {
-                        dgvOrders[9, i].Value = res == "" ? "Đặt lệnh thành công" : res;
+                        dgvOrders[9, i].Value = res == "" ? "Đặt lệnh thành công" : "Đặt lệnh lỗi: " + res;
                     }));
 
                     if (res == "")
@@ -374,7 +395,7 @@ namespace VFTrade
                     }
                     Thread.Sleep(500);
                 }
-
+                IsIndividualOrder = true;
                 this.Invoke(new ThreadStart(() =>
                 {
                     btnPlaceOrderAllDay.Enabled = true;
@@ -412,7 +433,7 @@ namespace VFTrade
                 {
                     this.Invoke(new ThreadStart(() =>
                     {
-                        dgvDeposit[5, e.RowIndex].Value = " Đang nộp tiền ...";
+                        dgvDeposit[5, e.RowIndex].Value = "Đang nộp tiền ...";
                     }));
                     var res = myManager.NopTien(info);
                     this.Invoke(new ThreadStart(() =>
@@ -425,8 +446,15 @@ namespace VFTrade
 
         private void dgvOrders_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
+            if (!IsIndividualOrder)
+            {
+                MessageBox.Show("Phần mềm đang bận đặt lệnh");
+                return;
+            }
+
             if (e.ColumnIndex == 8 && e.RowIndex >= 0 && e.RowIndex < dgvOrders.RowCount)
             {
+                IsIndividualOrder = false;
                 var order = ListOrders[e.RowIndex];
                 Task.Factory.StartNew(() =>
                 {
@@ -448,6 +476,7 @@ namespace VFTrade
                             dgvOrders[9, e.RowIndex].Value = res == "" ? "Khớp lệnh thành công" : res;
                         }));
                     }
+                    IsIndividualOrder = true;
                 });
             }
         }

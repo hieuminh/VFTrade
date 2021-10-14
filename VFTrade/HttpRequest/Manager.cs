@@ -337,8 +337,6 @@ namespace VFTrade.HttpRequest
             }
         }
 
-        
-
         public string NopTien( DepositInfo info )
         {
             if (!IsOnline)
@@ -378,36 +376,36 @@ namespace VFTrade.HttpRequest
                     //formBankCode
                     SelectElement formBankCode = new SelectElement(_driver.FindElement(By.Name("formBankCode")));
                     formBankCode.SelectByText(info.TKTong);
-                    Thread.Sleep(250);
+                    Thread.Sleep(150);
 
                     IWebElement formAccountCode = _driver.FindElement(By.Name("formAccountCode"));
                     formAccountCode.SendKeys(info.SoTK);
-                    Thread.Sleep(250);
+                    Thread.Sleep(150);
 
                     //formAmount
                     IWebElement formAmount = _driver.FindElement(By.Name("formAmount"));
                     formAmount.SendKeys(info.Money.ToString());
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
 
                     //formFileDate
                     IWebElement formFileDate = _driver.FindElement(By.Name("formFileDate"));
                     formFileDate.SetAttribute("value", info.DepositDate);
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
 
                     //formTransactionDate
                     IWebElement formTransactionDate = _driver.FindElement(By.Name("formTransactionDate"));
                     formTransactionDate.SetAttribute("value", info.RecordedDate);
-                    Thread.Sleep(250);
+                    Thread.Sleep(100);
 
                     //formContent
                     IWebElement formContent = _driver.FindElement(By.Name("formContent"));
                     formContent.SendKeys("Deposited by tool");
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
 
                     //class="mx-2 mr-auto btn-search fz-14 btn btn-primary"
                     IWebElement submitTien = _driver.FindElement(By.CssSelector("button.mx-2.mr-auto.btn-search.fz-14.btn.btn-primary"));
                     submitTien.Click();
-                    Thread.Sleep(1000);
+                    Thread.Sleep(500);
 
                     /*** But toan ***/
                     IWebElement buttoan = _driver.FindElement(By.LinkText("Bút toán tiền"));
@@ -468,21 +466,21 @@ namespace VFTrade.HttpRequest
                     //orderAccount
                     IWebElement orderAccount = _driver.FindElement(By.Name("orderAccount"));
                     orderAccount.SendKeys(order.SoTK);
-                    Thread.Sleep(200);
+                    Thread.Sleep(150);
 
                     if ( order.OrderType == "MUA" )
                     {
                         //btn btn-type-trade text-uppercase buy active
                         IWebElement buyType = _driver.FindElement(By.CssSelector("button.btn.btn-type-trade.text-uppercase.buy"));
                         buyType.Click();
-                        Thread.Sleep(200);
+                        Thread.Sleep(150);
                     }
                     else
                     {
                         //class="btn btn-type-trade text-uppercase sell "
                         IWebElement sellType = _driver.FindElement(By.CssSelector("button.btn.btn-type-trade.text-uppercase.sell"));
                         sellType.Click();
-                        Thread.Sleep(200);
+                        Thread.Sleep(150);
                     }
 
                     //orderSymbol
@@ -524,7 +522,7 @@ namespace VFTrade.HttpRequest
 
                             if (msg != "Đặt lệnh thành công!" && msg != "" )
                             {
-                                return "Err: " + msg;
+                                return msg;
                             }
                             else if (msg != "")
                             {
@@ -563,20 +561,65 @@ namespace VFTrade.HttpRequest
                     {
                         IWebElement navMenu = _driver.FindElement(By.CssSelector("img.img-collapse"));
                         navMenu.Click();
-                        Thread.Sleep(500);
+                        Thread.Sleep(300);
                     }
                     catch (NoSuchElementException) { }
                     
                     //Trạng thái lệnh
                     IWebElement btnTrangThaiLenh = _driver.FindElement(By.LinkText("Sổ lệnh Manual"));
                     btnTrangThaiLenh.Click();
-                    Thread.Sleep(350);
+                    Thread.Sleep(1000);
 
+
+                    // tim Lenh vua dat trong So Lenh
                     IWebElement table = _driver.FindElement(By.CssSelector("table.table.table-bordered"));
                     var allrows = table.FindElements(By.TagName("tr"));
-                    var row1 = allrows[1];
-                    var cell1s = row1.FindElements(By.TagName("td"));
-                    var cell9 = cell1s[9];
+                    IWebElement row;
+                    IWebElement cell9 = null;
+                    for( int i=1;i<allrows.Count;++i)
+                    {
+                        row = allrows[i];
+                        var cells = row.FindElements(By.TagName("td"));
+                        if (cells[1].Text.Trim() != order.SoTK)
+                            continue;
+
+                        if (order.OrderType == "MUA" && cells[2].Text.Trim() != "B")
+                            continue;
+                        else if (order.OrderType != "MUA" && cells[2].Text.Trim() == "B")
+                            continue;
+
+                        if (cells[3].Text.Trim() != order.MaCK)
+                            continue;
+
+                        decimal vol = decimal.Parse(cells[4].Text.Trim().Replace(",","") );
+                        if (vol != order.Volume)
+                            continue;
+
+                        decimal price;
+                        if (decimal.TryParse(order.Price, out price))
+                        {
+                            decimal price1;
+                            if (decimal.TryParse(cells[5].Text.Trim(), out price1))
+                            {
+                                decimal diff = Math.Abs(price - price1);
+                                if (diff > 0.0001M)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                                continue;
+                        }
+                        else
+                        {
+                            if (cells[5].Text.Trim() != order.Price)
+                                continue;
+                        }
+
+                        cell9 = cells[9];
+                        break;
+                    }
+                    
                     IWebElement btnConfirm = cell9.FindElement(By.CssSelector("button.btn.btn-primary"));
                     btnConfirm.Click();
                     Thread.Sleep(350);
@@ -584,17 +627,17 @@ namespace VFTrade.HttpRequest
                     //formCTCK
                     SelectElement formCTCK = new SelectElement(_driver.FindElement(By.Name("formCTCK")));
                     formCTCK.SelectByText(order.CtyCK);
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
 
                     //formTKT
                     SelectElement formTKT = new SelectElement(_driver.FindElement(By.Name("formTKT")));
                     formTKT.SelectByText(order.TKTong);
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
 
                     //formOrderNo
                     IWebElement formOrderNo = _driver.FindElement(By.Name("formOrderNo"));
                     formOrderNo.SendKeys(order.SHL);
-                    Thread.Sleep(200);
+                    Thread.Sleep(100);
 
                     //font-weight-bold fz-14 mx-2 btn btn-primary
                     IWebElement btnXacNhan = _driver.FindElement(By.CssSelector("button.font-weight-bold.fz-14.mx-2.btn.btn-primary"));
