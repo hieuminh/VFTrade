@@ -18,5 +18,7 @@ namespace CreateAccount
         public string Phone;
         public string Email;
         public long Credit;
+
+        public bool IsCreated;
     }
 }

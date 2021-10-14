@@ -3,6 +3,7 @@ using Newtonsoft.Json.Linq;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
+using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,42 @@ using System.Threading.Tasks;
 
 namespace VFTrade.HttpRequest
 {
+    public static class WebElementCustom
+    {
+        public static IWebElement SetAttribute(this IWebElement element, string name, string value)
+        {
+            var driver = ((IWrapsDriver)element).WrappedDriver;
+            var jsExecutor = (IJavaScriptExecutor)driver;
+            jsExecutor.ExecuteScript("arguments[0].setAttribute(arguments[1], arguments[2]);", element, name, value);
+
+            return element;
+        }
+    }
+
     public class Manager
     {
         public string Username;
         public string Password;
         public int RECV_BUFF_SIZE = 1024 * 8;
+        public bool IsOnline = false;
+
+        private readonly object selfLock = new object();
+
+        public void CheckIn()
+        {
+            if (Monitor.TryEnter(selfLock))
+            {
+                try
+                {
+                    _driver.Navigate().Refresh();
+                }
+                catch { }
+                finally
+                {
+                    Monitor.Exit(selfLock);
+                }
+            }
+        }
 
         protected readonly object _lockCookie = new object();
         protected CookieCollection _cookieCollection;
@@ -181,6 +213,7 @@ namespace VFTrade.HttpRequest
             chromeOptions.AddArgument("allow-insecure-localhost");
             chromeOptions.AcceptInsecureCertificates = true;
             _driver = new ChromeDriver(Directory.GetCurrentDirectory(), chromeOptions);
+            _driver.Manage().Window.Maximize();
         }
 
         public string LogInSelenium()
@@ -199,206 +232,417 @@ namespace VFTrade.HttpRequest
 
             IWebElement btnDangNhap = _driver.FindElement(By.CssSelector("button.mt-2.btn.btn-primary"));
             btnDangNhap.Click();
+            IsOnline = true;
             return "";
         }        
 
         public string CreateAccount( Account account )
         {
-            try
+            if (!IsOnline)
+                return "Error";
+            lock (selfLock)
             {
-                _driver.Navigate().Refresh();
-                IWebElement btnBroker = _driver.FindElement(By.LinkText("Broker"));
-                btnBroker.Click();
-                Thread.Sleep(500);
-                //.btn-action-add
-                IWebElement btnAdd = _driver.FindElement(By.CssSelector("button.btn-action-add.fz-14.btn.btn-primary"));
-                btnAdd.Click();
-
-                IWebElement stk = _driver.FindElement(By.Name("accountCode"));
-                stk.SendKeys(account.SoTK);
-                Thread.Sleep(300);
-
-                SelectElement productCode = new SelectElement(_driver.FindElement(By.Name("productCode")));
-                productCode.SelectByText(account.SanPham);
-                Thread.Sleep(300);
-
-                SelectElement cardIdType = new SelectElement(_driver.FindElement(By.Name("cardIdType")));
-                cardIdType.SelectByText(account.LoaiGiayTo);
-                Thread.Sleep(300);
-
-                IWebElement cardId = _driver.FindElement(By.Name("cardId"));
-                cardId.SendKeys(account.SoID);
-                Thread.Sleep(300);
-
-                //issuePlace
-                IWebElement issuePlace = _driver.FindElement(By.Name("issuePlace"));
-                issuePlace.SendKeys("Hanoi");
-                Thread.Sleep(300);
-
-                //custMobile
-                IWebElement custMobile = _driver.FindElement(By.Name("custMobile"));
-                custMobile.SendKeys(account.Phone);
-                Thread.Sleep(300);
-
-                IWebElement custEmail = _driver.FindElement(By.Name("custEmail"));
-                custEmail.SendKeys(account.Email);
-                Thread.Sleep(300);
-
-                //custAddress
-                IWebElement custAddress = _driver.FindElement(By.Name("custAddress"));
-                custAddress.SendKeys("Hanoi");
-                Thread.Sleep(300);
-
-                //content
-                IWebElement content = _driver.FindElement(By.Name("content"));
-                content.SendKeys(account.GhiChu);
-                Thread.Sleep(300);
-
-                //class="fz-14 btn btn-success"
-                //accountName
-                IWebElement accountName = _driver.FindElement(By.Name("accountName"));
-                accountName.SendKeys(account.HoTen);
-                Thread.Sleep(300);
-
-                SelectElement commCode = new SelectElement(_driver.FindElement(By.Name("commCode")));
-                commCode.SelectByText(account.GoiPhi);
-                Thread.Sleep(300);
-
-                IWebElement submit = _driver.FindElement(By.CssSelector("button.fz-14.btn.btn-success"));
-                submit.Click();
-                Thread.Sleep(2000);
-
-                try
+                try 
                 {
-                    submit = _driver.FindElement(By.CssSelector("button.fz-14.btn.btn-success"));
+                    _driver.Navigate().Refresh();
+                    IWebElement btnBroker = _driver.FindElement(By.LinkText("Broker"));
+                    btnBroker.Click();
+                    Thread.Sleep(500);
+                    //.btn-action-add
+                    IWebElement btnAdd = _driver.FindElement(By.CssSelector("button.btn-action-add.fz-14.btn.btn-primary"));
+                    btnAdd.Click();
+
+                    IWebElement stk = _driver.FindElement(By.Name("accountCode"));
+                    stk.SendKeys(account.SoTK);
+                    Thread.Sleep(300);
+
+                    SelectElement productCode = new SelectElement(_driver.FindElement(By.Name("productCode")));
+                    productCode.SelectByText(account.SanPham);
+                    Thread.Sleep(300);
+
+                    SelectElement cardIdType = new SelectElement(_driver.FindElement(By.Name("cardIdType")));
+                    cardIdType.SelectByText(account.LoaiGiayTo);
+                    Thread.Sleep(300);
+
+                    IWebElement cardId = _driver.FindElement(By.Name("cardId"));
+                    cardId.SendKeys(account.SoID);
+                    Thread.Sleep(300);
+
+                    //issuePlace
+                    IWebElement issuePlace = _driver.FindElement(By.Name("issuePlace"));
+                    issuePlace.SendKeys("Hanoi");
+                    Thread.Sleep(300);
+
+                    //custMobile
+                    IWebElement custMobile = _driver.FindElement(By.Name("custMobile"));
+                    custMobile.SendKeys(account.Phone);
+                    Thread.Sleep(300);
+
+                    IWebElement custEmail = _driver.FindElement(By.Name("custEmail"));
+                    custEmail.SendKeys(account.Email);
+                    Thread.Sleep(300);
+
+                    //custAddress
+                    IWebElement custAddress = _driver.FindElement(By.Name("custAddress"));
+                    custAddress.SendKeys("Hanoi");
+                    Thread.Sleep(300);
+
+                    //content
+                    IWebElement content = _driver.FindElement(By.Name("content"));
+                    content.SendKeys(account.GhiChu);
+                    Thread.Sleep(300);
+
+                    //class="fz-14 btn btn-success"
+                    //accountName
+                    IWebElement accountName = _driver.FindElement(By.Name("accountName"));
+                    accountName.SendKeys(account.HoTen);
+                    Thread.Sleep(300);
+
+                    SelectElement commCode = new SelectElement(_driver.FindElement(By.Name("commCode")));
+                    commCode.SelectByText(account.GoiPhi);
+                    Thread.Sleep(300);
+
+                    IWebElement submit = _driver.FindElement(By.CssSelector("button.fz-14.btn.btn-success"));
+                    submit.Click();
+                    Thread.Sleep(2000);
+
+                    try
+                    {
+                        submit = _driver.FindElement(By.CssSelector("button.fz-14.btn.btn-success"));
+                        return "Error";
+                    }
+                    catch { }
+
+                    /* Navigate to Nap tien **/
+                    //item-head nav-link px-3 text-white fz-13 active // MENU
+                    try
+                    {
+                        IWebElement navNghiepVuTien = _driver.FindElement(By.CssSelector("img.img-collapse"));
+                        navNghiepVuTien.Click();
+                        Thread.Sleep(500);
+                    }
+                    catch (NoSuchElementException) { }
+
+                    //class="item-head nav-link px-3 text-white fz-13 "
+                    var navNghiepVuTien1s = _driver.FindElements(By.CssSelector("div.item-head.nav-link.px-3.text-white.fz-13"));
+                    navNghiepVuTien1s[2].Click();
+                    Thread.Sleep(500);
+
+                    return "";
+                }
+                catch
+                {
                     return "Error";
                 }
-                catch { }
-
-                /* Navigate to Nap tien **/
-                //item-head nav-link px-3 text-white fz-13 active // MENU
-                try
-                {
-                    IWebElement navNghiepVuTien = _driver.FindElement(By.CssSelector("img.img-collapse"));
-                    navNghiepVuTien.Click();
-                    Thread.Sleep(500);
-                }
-                catch (NoSuchElementException) { }
-
-                //class="item-head nav-link px-3 text-white fz-13 "
-                var navNghiepVuTien1s = _driver.FindElements(By.CssSelector("div.item-head.nav-link.px-3.text-white.fz-13"));
-                navNghiepVuTien1s[2].Click();
-                Thread.Sleep(500);
-
-                //Nộp tiền/ rút tiền
-                IWebElement btnNapRutTien = _driver.FindElement(By.LinkText("Nộp tiền/ rút tiền"));
-                btnNapRutTien.Click();
-                Thread.Sleep(500);
-
-                IWebElement btnNapTien = _driver.FindElement(By.LinkText("Nộp tiền"));
-                btnNapTien.Click();
-                Thread.Sleep(500);
-
-                //formBankCode
-                SelectElement formBankCode = new SelectElement(_driver.FindElement(By.Name("formBankCode")));
-                formBankCode.SelectByIndex(1);
-                Thread.Sleep(250);
-
-                IWebElement formAccountCode = _driver.FindElement(By.Name("formAccountCode"));
-                formAccountCode.SendKeys(account.SoTK);
-                Thread.Sleep(250);
-
-                //formAmount
-                IWebElement formAmount = _driver.FindElement(By.Name("formAmount"));
-                formAmount.SendKeys(account.Credit.ToString());
-                Thread.Sleep(250);
-
-                //formContent
-                IWebElement formContent = _driver.FindElement(By.Name("formContent"));
-                formContent.SendKeys("Deposited by tool");
-                Thread.Sleep(200);
-
-                //class="mx-2 mr-auto btn-search fz-14 btn btn-primary"
-                IWebElement submitTien = _driver.FindElement(By.CssSelector("button.mx-2.mr-auto.btn-search.fz-14.btn.btn-primary"));
-                submitTien.Click();
-                Thread.Sleep(1000);                
-                return "";
-            }
-            catch {
-                return "Error";
             }
         }
 
-        public string ButToan(Account account)
+        
+
+        public string NopTien( DepositInfo info )
         {
-            try
+            if (!IsOnline)
+                return "Error";
+            lock (selfLock)
             {
-                _driver.Navigate().Refresh();
-                IWebElement btnBroker = _driver.FindElement(By.LinkText("Broker"));
-                btnBroker.Click();
-                Thread.Sleep(500);                
-                /* Navigate to Nap tien **/
-                //item-head nav-link px-3 text-white fz-13 active // MENU
                 try
                 {
-                    IWebElement navNghiepVuTien = _driver.FindElement(By.CssSelector("img.img-collapse"));
-                    navNghiepVuTien.Click();
+                    _driver.Navigate().Refresh();
+                    IWebElement btnBroker = _driver.FindElement(By.LinkText("Broker"));
+                    btnBroker.Click();
                     Thread.Sleep(500);
+                    /* Navigate to Nap tien **/
+                    //item-head nav-link px-3 text-white fz-13 active // MENU
+                    try
+                    {
+                        IWebElement navNghiepVuTien = _driver.FindElement(By.CssSelector("img.img-collapse"));
+                        navNghiepVuTien.Click();
+                        Thread.Sleep(500);
+                    }
+                    catch (NoSuchElementException) { }
+
+                    //class="item-head nav-link px-3 text-white fz-13 "
+                    var navNghiepVuTien1s = _driver.FindElements(By.CssSelector("div.item-head.nav-link.px-3.text-white.fz-13"));
+                    navNghiepVuTien1s[2].Click();
+                    Thread.Sleep(500);
+
+                    //Nộp tiền/ rút tiền
+                    IWebElement btnNapRutTien = _driver.FindElement(By.LinkText("Nộp tiền/ rút tiền"));
+                    btnNapRutTien.Click();
+                    Thread.Sleep(500);
+                    
+                    IWebElement btnNapTien = _driver.FindElement(By.LinkText("Nộp tiền"));
+                    btnNapTien.Click();
+                    Thread.Sleep(500);
+
+                    //formBankCode
+                    SelectElement formBankCode = new SelectElement(_driver.FindElement(By.Name("formBankCode")));
+                    formBankCode.SelectByText(info.TKTong);
+                    Thread.Sleep(250);
+
+                    IWebElement formAccountCode = _driver.FindElement(By.Name("formAccountCode"));
+                    formAccountCode.SendKeys(info.SoTK);
+                    Thread.Sleep(250);
+
+                    //formAmount
+                    IWebElement formAmount = _driver.FindElement(By.Name("formAmount"));
+                    formAmount.SendKeys(info.Money.ToString());
+                    Thread.Sleep(250);
+
+                    //formFileDate
+                    IWebElement formFileDate = _driver.FindElement(By.Name("formFileDate"));
+                    formFileDate.SetAttribute("value", info.DepositDate);
+                    Thread.Sleep(250);
+
+                    //formTransactionDate
+                    IWebElement formTransactionDate = _driver.FindElement(By.Name("formTransactionDate"));
+                    formTransactionDate.SetAttribute("value", info.RecordedDate);
+                    Thread.Sleep(250);
+
+                    //formContent
+                    IWebElement formContent = _driver.FindElement(By.Name("formContent"));
+                    formContent.SendKeys("Deposited by tool");
+                    Thread.Sleep(200);
+
+                    //class="mx-2 mr-auto btn-search fz-14 btn btn-primary"
+                    IWebElement submitTien = _driver.FindElement(By.CssSelector("button.mx-2.mr-auto.btn-search.fz-14.btn.btn-primary"));
+                    submitTien.Click();
+                    Thread.Sleep(1000);
+
+                    /*** But toan ***/
+                    IWebElement buttoan = _driver.FindElement(By.LinkText("Bút toán tiền"));
+                    buttoan.Click();
+                    Thread.Sleep(500);
+                    var task = Task.Factory.StartNew(() =>
+                    {
+                        bool staleElement = true;
+                        while (staleElement)
+                        {
+                            try
+                            {
+                                IWebElement table = _driver.FindElement(By.CssSelector("table.table.table-bordered"));
+                                var allrows = table.FindElements(By.TagName("tr"));
+                                var row1 = allrows[1];
+                                var cell1s = row1.FindElements(By.TagName("td"));
+                                var cell1 = cell1s[0];
+                                var acc2 = new Actions(_driver);
+                                var acts = acc2.DoubleClick(cell1);
+                                acts.Perform();
+                                staleElement = false;
+                                Thread.Sleep(1000);
+                            }
+                            catch (StaleElementReferenceException e)
+                            {
+                                staleElement = true;
+                            }
+                        }
+                    });
+                    task.Wait();
+                    //class="mx-2 mr-auto btn-search fz-14 btn btn-success"
+                    IWebElement duyet = _driver.FindElement(By.CssSelector("button.mx-2.mr-auto.btn-search.fz-14.btn.btn-success"));
+                    duyet.Click();
+                    return "";
                 }
-                catch (NoSuchElementException) { }
-
-                //class="item-head nav-link px-3 text-white fz-13 "
-                var navNghiepVuTien1s = _driver.FindElements(By.CssSelector("div.item-head.nav-link.px-3.text-white.fz-13"));
-                navNghiepVuTien1s[2].Click();
-                Thread.Sleep(500);
-
-                //Nộp tiền/ rút tiền
-                IWebElement btnNapRutTien = _driver.FindElement(By.LinkText("Nộp tiền/ rút tiền"));
-                btnNapRutTien.Click();
-                Thread.Sleep(500);
-                
-                /*** But toan ***/
-                IWebElement buttoan = _driver.FindElement(By.LinkText("Bút toán tiền"));
-                buttoan.Click();
-                Thread.Sleep(500);
-                var task = Task.Factory.StartNew(() => 
+                catch
                 {
-                    bool staleElement = true;
-                    while (staleElement)
+                    return "Error";
+                }
+            }
+        }        
+
+        public string PlaceOrder( Order order )
+        {
+            if (!IsOnline)
+                return "Error";
+            lock (selfLock)
+            {
+                try
+                {
+                    _driver.Navigate().Refresh();
+
+                    //class="btn-trade btn btn-primary"
+                    IWebElement btnDatLenh = _driver.FindElement(By.LinkText("Đặt lệnh"));
+                    btnDatLenh.Click();
+                    Thread.Sleep(500);
+
+                    //orderAccount
+                    IWebElement orderAccount = _driver.FindElement(By.Name("orderAccount"));
+                    orderAccount.SendKeys(order.SoTK);
+                    Thread.Sleep(200);
+
+                    if ( order.OrderType == "MUA" )
+                    {
+                        //btn btn-type-trade text-uppercase buy active
+                        IWebElement buyType = _driver.FindElement(By.CssSelector("button.btn.btn-type-trade.text-uppercase.buy"));
+                        buyType.Click();
+                        Thread.Sleep(200);
+                    }
+                    else
+                    {
+                        //class="btn btn-type-trade text-uppercase sell "
+                        IWebElement sellType = _driver.FindElement(By.CssSelector("button.btn.btn-type-trade.text-uppercase.sell"));
+                        sellType.Click();
+                        Thread.Sleep(200);
+                    }
+
+                    //orderSymbol
+                    IWebElement orderSymbol = _driver.FindElement(By.Name("orderSymbol"));
+                    orderSymbol.Clear();
+                    orderSymbol.SendKeys(order.MaCK.ToUpper());
+                    Thread.Sleep(100);
+
+                    //orderVolume
+                    IWebElement orderVolume = _driver.FindElement(By.Name("orderVolume"));
+                    orderVolume.Clear();
+                    orderVolume.SendKeys(order.Volume.ToString());
+                    Thread.Sleep(100);
+
+                    //orderPrice
+                    IWebElement orderPrice = _driver.FindElement(By.Name("orderPrice"));
+                    orderPrice.SendKeys(order.Price);
+                    Thread.Sleep(100);
+
+                    //Place order
+                    //class="btn font-weight-bold fz-14 btn-order order-sell"
+                    IWebElement submit = _driver.FindElement(By.CssSelector("button.btn.font-weight-bold.fz-14.btn-order"));
+                    submit.Click();
+                    Thread.Sleep(350);
+
+                    //class="font-weight-bold fz-14 mx-2 btn btn-primary"
+                    IWebElement confirm = _driver.FindElement(By.CssSelector("button.font-weight-bold.fz-14.mx-2.btn.btn-primary"));
+                    confirm.Click();
+                    Thread.Sleep(250);
+
+                    for (int i = 0; i < 5; ++i)
                     {
                         try
                         {
-                            IWebElement table = _driver.FindElement(By.CssSelector("table.table.table-bordered"));
-                            var allrows = table.FindElements(By.TagName("tr"));
-                            var row1 = allrows[1];
-                            var cell1s = row1.FindElements(By.TagName("td"));
-                            var cell1 = cell1s[0];
-                            var acc2 = new Actions(_driver);
-                            var acts = acc2.DoubleClick(cell1);
-                            acts.Perform();
-                            staleElement = false;
-                            Thread.Sleep(2000);
+                            //Toastify__toast-body 
+                            //Đặt lệnh thành công!
+                            IWebElement msgElement = _driver.FindElement(By.ClassName("Toastify__toast-body"));
+                            string msg = msgElement.Text.Trim();
+
+                            if (msg != "Đặt lệnh thành công!" && msg != "" )
+                            {
+                                return "Err: " + msg;
+                            }
+                            else if (msg != "")
+                            {
+                                return "";
+                            }
                         }
-                        catch (StaleElementReferenceException e)
-                        {
-                            staleElement = true;
-                        }
+                        catch { }
+                        Thread.Sleep(100);
                     }
-                });
-                task.Wait();
-                //class="mx-2 mr-auto btn-search fz-14 btn btn-success"
-                IWebElement duyet = _driver.FindElement(By.CssSelector("button.mx-2.mr-auto.btn-search.fz-14.btn.btn-success"));
-                duyet.Click();
-                return "";
+                    return "";
+                }
+                catch
+                {
+                    return "Error";
+                }
             }
-            catch
-            {
+        }
+
+        public string ConfirmOrder( Order order)
+        {
+            if (!IsOnline)
                 return "Error";
+            lock (selfLock)
+            {
+                try
+                {
+                    _driver.Navigate().Refresh();
+
+                    IWebElement btnBroker = _driver.FindElement(By.LinkText("Admin"));
+                    btnBroker.Click();
+                    Thread.Sleep(500);
+
+                    /* Navigate to So Lenh **/
+                    //item-head nav-link px-3 text-white fz-13 active // MENU
+                    try
+                    {
+                        IWebElement navMenu = _driver.FindElement(By.CssSelector("img.img-collapse"));
+                        navMenu.Click();
+                        Thread.Sleep(500);
+                    }
+                    catch (NoSuchElementException) { }
+                    
+                    //Trạng thái lệnh
+                    IWebElement btnTrangThaiLenh = _driver.FindElement(By.LinkText("Sổ lệnh Manual"));
+                    btnTrangThaiLenh.Click();
+                    Thread.Sleep(350);
+
+                    IWebElement table = _driver.FindElement(By.CssSelector("table.table.table-bordered"));
+                    var allrows = table.FindElements(By.TagName("tr"));
+                    var row1 = allrows[1];
+                    var cell1s = row1.FindElements(By.TagName("td"));
+                    var cell9 = cell1s[9];
+                    IWebElement btnConfirm = cell9.FindElement(By.CssSelector("button.btn.btn-primary"));
+                    btnConfirm.Click();
+                    Thread.Sleep(350);
+
+                    //formCTCK
+                    SelectElement formCTCK = new SelectElement(_driver.FindElement(By.Name("formCTCK")));
+                    formCTCK.SelectByText(order.CtyCK);
+                    Thread.Sleep(200);
+
+                    //formTKT
+                    SelectElement formTKT = new SelectElement(_driver.FindElement(By.Name("formTKT")));
+                    formTKT.SelectByText(order.TKTong);
+                    Thread.Sleep(200);
+
+                    //formOrderNo
+                    IWebElement formOrderNo = _driver.FindElement(By.Name("formOrderNo"));
+                    formOrderNo.SendKeys(order.SHL);
+                    Thread.Sleep(200);
+
+                    //font-weight-bold fz-14 mx-2 btn btn-primary
+                    IWebElement btnXacNhan = _driver.FindElement(By.CssSelector("button.font-weight-bold.fz-14.mx-2.btn.btn-primary"));
+                    btnXacNhan.Click();
+                    Thread.Sleep(300);
+
+                    //class="mx-1 btn btn-success"
+                    IWebElement btnKhop = cell9.FindElement(By.CssSelector("button.mx-1.btn.btn-success"));
+                    btnKhop.Click();
+                    Thread.Sleep(300);
+
+                    //formMatchPrice
+                    IWebElement formMatchPrice = _driver.FindElement(By.Name("formMatchPrice"));
+                    formMatchPrice.SendKeys(order.MatchedPrice);
+                    Thread.Sleep(100);
+
+                    //formMatchPrice
+                    IWebElement formMatchVol = _driver.FindElement(By.Name("formMatchVol"));
+                    formMatchVol.SendKeys(order.Volume.ToString());
+                    Thread.Sleep(100);
+
+                    //font-weight-bold fz-14 mx-2 btn btn-primary
+                    IWebElement btnXacNhanKhop = _driver.FindElement(By.CssSelector("button.font-weight-bold.fz-14.mx-2.btn.btn-primary"));
+                    btnXacNhanKhop.Click();
+                    Thread.Sleep(300);
+
+                    /*
+                    IWebElement msgElement = _driver.FindElement(By.ClassName("Toastify__toast-body"));
+                    string msg = msgElement.Text.Trim();
+
+                    if (!msg.Contains("thành công") )
+                    {
+                        return "Error: " + msg;
+                    }*/
+
+                    return "";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                    return "Error";
+                }
             }
         }
 
         public void Close()
         {
+            IsOnline = false;
             _driver.Quit();
             _driver.Dispose();
         }
