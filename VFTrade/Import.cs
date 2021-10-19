@@ -191,5 +191,72 @@ namespace CreateAccount
                 return new List<Order>();
             }
         }
+
+        private static decimal roundPrice( decimal price )
+        {
+            long llprice = (long)(price * 1000);
+            if ( llprice % 50 == 0 )
+            {
+                //18.800
+                //18.250
+                return price;
+            }
+            else
+            {
+                llprice -= llprice % 50;
+                return llprice / 1000M;
+            }
+        }
+
+        public static List<ClosePriceInfo> ClosePrices( string filePath )
+        {
+            List<ClosePriceInfo> vres = new List<ClosePriceInfo>();
+            try
+            {
+                using (var stream = File.Open(filePath, FileMode.Open, FileAccess.Read))
+                {
+                    // Auto-detect format, supports:
+                    //  - Binary Excel files (2.0-2003 format; *.xls)
+                    //  - OpenXml Excel files (2007 format; *.xlsx, *.xlsb)
+                    using (var reader = ExcelReaderFactory.CreateReader(stream))
+                    {
+                        while (reader.Name.ToLower() != "giá đóng cửa")
+                        {
+                            if (!reader.NextResult())
+                            {
+                                return vres;
+                            }
+                        }
+                        // Choose one of either 1 or 2:
+                        // 1. Use the reader methods                        
+                        int line = 0;
+                        while (reader.Read())
+                        {
+                            if (line > 0)
+                            {
+                                var info = new ClosePriceInfo();
+                                try
+                                {
+                                    info.Date = reader.GetValue(1).ToString();
+                                    info.MaCK = reader.GetValue(2).ToString();
+                                    info.GiaDongCua = decimal.Parse(reader.GetValue(3).ToString());
+                                    try { info.GiaSan = decimal.Parse( reader.GetValue(4).ToString()); } catch { info.GiaSan = roundPrice(info.GiaDongCua * 0.93M); }
+                                    try { info.GiaTran = decimal.Parse( reader.GetValue(5).ToString()); } catch { info.GiaTran = roundPrice(info.GiaDongCua * 1.067M); }
+                                    try { info.GiaTC = decimal.Parse( reader.GetValue(6).ToString()); } catch { info.GiaTC = info.GiaDongCua; }
+                                    vres.Add(info);
+                                }
+                                catch { }                                
+                            }
+                            line += 1;
+                        }
+                    }
+                }
+                return vres;
+            }
+            catch
+            {
+                return new List<ClosePriceInfo>();
+            }
+        }
     }
 }

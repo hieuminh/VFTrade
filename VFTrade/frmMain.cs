@@ -34,6 +34,7 @@ namespace VFTrade
         private List<Account> ListAccount;
         private List<DepositInfo> ListDeposits;
         private List<Order> ListOrders;
+        private List<ClosePriceInfo> ListClosePrices;
 
         private void btnImport_Click(object sender, EventArgs e)
         {
@@ -134,6 +135,43 @@ namespace VFTrade
                     if ( i == 0 || ListDate[i] != ListDate[i-1] )
                     {
                         cbxOrderDate.Items.Add(ListDate[i]);
+                    }
+                }
+            }
+            catch
+            {
+            }
+
+            try
+            {
+                ListClosePrices = Import.ClosePrices(txtFilePath.Text.Trim());
+                dgvClosePrice.Rows.Clear();
+                List<string> ListDate = new List<string>();
+                for (int i = 0; i < ListClosePrices.Count; ++i)
+                {
+                    var info = ListClosePrices[i];
+                    ListDate.Add(info.Date);
+                    dgvClosePrice.Rows.Add(new object[]
+                    {
+                        (i+1),
+                        info.Date,
+                        info.MaCK,
+                        (info.GiaDongCua * 1000).ToString("N0"),
+                        (info.GiaSan * 1000).ToString("N0"),
+                        (info.GiaTran * 1000).ToString("N0"),
+                        (info.GiaTC * 1000).ToString("N0"),
+                        "Thực hiện",
+                        ""
+                    });
+                }
+
+                ListDate.Sort();
+                cbxCloseDate.Items.Clear();
+                for (int i = 0; i < ListDate.Count; ++i)
+                {
+                    if (i == 0 || ListDate[i] != ListDate[i - 1])
+                    {
+                        cbxCloseDate.Items.Add(ListDate[i]);
                     }
                 }
             }
@@ -260,6 +298,7 @@ namespace VFTrade
             grbThaoTac.Left = (this.ClientSize.Width - grbThaoTac.Width) / 2;
             btnTao.Left = (this.ClientSize.Width - btnTao.Width) / 2;
             btnNopTienAll.Left = (this.ClientSize.Width - btnNopTienAll.Width) / 2;
+            grbClosePrice.Left = (this.ClientSize.Width - grbClosePrice.Width) / 2;
         }
 
 
@@ -306,6 +345,7 @@ namespace VFTrade
             grbThaoTac.Left = (this.ClientSize.Width - grbThaoTac.Width) / 2;
             btnTao.Left = (this.ClientSize.Width - btnTao.Width) / 2;
             btnNopTienAll.Left = (this.ClientSize.Width - btnNopTienAll.Width) / 2;
+            grbClosePrice.Left = (this.ClientSize.Width - grbClosePrice.Width) / 2;
         }
 
         private void btnNopTienAll_Click(object sender, EventArgs e)
@@ -340,6 +380,8 @@ namespace VFTrade
         }
 
         private bool IsIndividualOrder = true;
+        private Dictionary<string, string> PlacedOrders = new Dictionary<string, string>();
+
         private void btnPlaceOrderAllDay_Click(object sender, EventArgs e)
         {
             btnPlaceOrderAllDay.Enabled = false;
@@ -369,6 +411,14 @@ namespace VFTrade
                     {
                         continue;
                     }
+
+                    if ( PlacedOrders.ContainsKey($"{ListOrders[i].SoTK}-{ListOrders[i].CtyCK}-{ListOrders[i].SHL}") )
+                    {
+                        string val = PlacedOrders[$"{ListOrders[i].SoTK}-{ListOrders[i].CtyCK}-{ListOrders[i].SHL}"];
+                        if (val == "")
+                            continue;
+                    }
+
                     totalLenh += 1;
                     this.Invoke(new ThreadStart(() =>
                     {
@@ -380,6 +430,7 @@ namespace VFTrade
                         dgvOrders[9, i].Value = res == "" ? "Đặt lệnh thành công" : "Đặt lệnh lỗi: " + res;
                     }));
 
+                    PlacedOrders[$"{ListOrders[i].SoTK}-{ListOrders[i].CtyCK}-{ListOrders[i].SHL}"] = res;
                     if (res == "")
                     {
                         success += 1;
@@ -455,7 +506,8 @@ namespace VFTrade
             if (e.ColumnIndex == 8 && e.RowIndex >= 0 && e.RowIndex < dgvOrders.RowCount)
             {
                 IsIndividualOrder = false;
-                var order = ListOrders[e.RowIndex];
+                int id = int.Parse(dgvOrders[0, e.RowIndex].Value.ToString() ) ;
+                var order = ListOrders[id];
                 Task.Factory.StartNew(() =>
                 {
                     this.Invoke(new ThreadStart(() =>
@@ -477,6 +529,84 @@ namespace VFTrade
                         }));
                     }
                     IsIndividualOrder = true;
+                });
+            }
+        }
+
+        private void btnReset_Click(object sender, EventArgs e)
+        {
+            PlacedOrders.Clear();
+            MessageBox.Show("Đã clear hết dữ liệu lệnh");
+        }
+
+        private void btnUpdatePrice_Click(object sender, EventArgs e)
+        {
+            btnUpdatePrice.Enabled = false;
+            string day = "";
+            try
+            {
+                day = cbxCloseDate.SelectedItem.ToString();
+            }
+            catch
+            {
+                MessageBox.Show("Phải chọn ngày");
+                btnUpdatePrice.Enabled = true;
+                return;
+            }
+
+            Task.Factory.StartNew(() =>
+            {
+                int success = 0;
+                int totalLenh = 0;
+                for (int i = 0; i < ListClosePrices.Count; ++i)
+                {
+                    if (ListClosePrices[i].Date != day)
+                    {
+                        continue;
+                    }
+                    
+                    totalLenh += 1;
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvClosePrice[8, i].Value = "Đang cập nhật ...";
+                    }));
+
+                    var res = myManager.UpdateClosePrice(ListClosePrices[i]);
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvClosePrice[8, i].Value = res == "" ? "Cập nhật giá đóng cửa thành công" : "Cập nhật giá lỗi: " + res;
+                    }));
+
+                    if (res == "")
+                        success += 1;                        
+                    Thread.Sleep(500);
+                }
+
+                this.Invoke(new ThreadStart(() =>
+                {
+                    btnUpdatePrice.Enabled = true;
+                    MessageBox.Show($"Đã cập nhật giá đóng cửa ngày {day} của {success} / {totalLenh} mã");
+                }));
+            });
+        }
+
+        private void dgvClosePrice_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.ColumnIndex == 7 && e.RowIndex >= 0 && e.RowIndex < dgvClosePrice.RowCount)
+            {
+                int id = int.Parse(dgvClosePrice[0, e.RowIndex].Value.ToString());
+                var closePriceInfo = ListClosePrices[id];
+                Task.Factory.StartNew(() =>
+                {
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvClosePrice[8, e.RowIndex].Value = "Đang cập nhật ...";
+                    }));
+                    var res = myManager.UpdateClosePrice(closePriceInfo);
+                    this.Invoke(new ThreadStart(() =>
+                    {
+                        dgvClosePrice[8, e.RowIndex].Value = res == "" ? "Cập nhật giá đóng cửa thành công" : res;
+                    }));                    
                 });
             }
         }

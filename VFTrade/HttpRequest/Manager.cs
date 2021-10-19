@@ -7,6 +7,7 @@ using OpenQA.Selenium.Internal;
 using OpenQA.Selenium.Support.UI;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -673,6 +674,177 @@ namespace VFTrade.HttpRequest
                         return "Error: " + msg;
                     }*/
 
+                    return "";
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(ex.Message + Environment.NewLine + ex.StackTrace);
+                    return "Error";
+                }
+            }
+        }
+
+        private void PickReactDateTime(string time)
+        {
+            // dd/MM/yyyy
+            DateTime date = DateTime.ParseExact(time, "dd/MM/yyyy", CultureInfo.InvariantCulture );
+            //react-datepicker__current-month
+            while (true)
+            {
+                IWebElement currentMonth = _driver.FindElement(By.ClassName("react-datepicker__current-month"));
+                var currentTime = DateTime.Parse(currentMonth.Text);
+                if (currentTime.Year == date.Year && currentTime.Month == date.Month)
+                    break;
+                else if ( currentTime.Year > date.Year || currentTime.Month > date.Month )
+                {
+                    //react-datepicker__navigation react-datepicker__navigation--previous
+                    IWebElement previous = _driver.FindElement(By.CssSelector("button.react-datepicker__navigation.react-datepicker__navigation--previous"));
+                    previous.Click();
+                    Thread.Sleep(300);
+                }
+                else if (currentTime.Year < date.Year || currentTime.Month < date.Month)
+                {
+                    //react-datepicker__navigation react-datepicker__navigation--next
+                    IWebElement next = _driver.FindElement(By.CssSelector("button.react-datepicker__navigation.react-datepicker__navigation--next"));
+                    next.Click();
+                    Thread.Sleep(300);
+                }
+            }
+
+            //class="react-datepicker__day react-datepicker__day--012"
+            IWebElement dayPick = _driver.FindElement(By.CssSelector($"div.react-datepicker__day.react-datepicker__day--{date.Day.ToString("D3")}"));
+            dayPick.Click();
+        }
+
+        public string UpdateClosePrice( ClosePriceInfo closePrice )
+        {
+            if (!IsOnline)
+                return "Error";
+            lock (selfLock)
+            {
+                try
+                {
+                    _driver.Navigate().Refresh();
+
+                    IWebElement btnBroker = _driver.FindElement(By.LinkText("Broker"));
+                    btnBroker.Click();
+                    Thread.Sleep(500);
+
+                    /* Navigate to Navigation Menu **/
+                    //item-head nav-link px-3 text-white fz-13 active // MENU
+                    try
+                    {
+                        IWebElement navMenuIcon = _driver.FindElement(By.CssSelector("img.img-collapse"));
+                        navMenuIcon.Click();
+                        Thread.Sleep(400);
+                    }
+                    catch (NoSuchElementException) { }
+
+                    // Bao cao tai san
+                    //class="item-head nav-link px-3 text-white fz-13 "
+                    var navMenu = _driver.FindElements(By.CssSelector("div.item-head.nav-link.px-3.text-white.fz-13"));
+                    navMenu[4].Click();
+                    Thread.Sleep(350);
+
+                    //Tra cứu tài sản
+                    IWebElement traCuuTaiSan = _driver.FindElement(By.LinkText("Tra cứu tài sản"));
+                    traCuuTaiSan.Click();
+                    Thread.Sleep(500);
+
+                    //Tra cứu giá đóng cửa CK cuối ngày
+                    IWebElement btnTraCuuGiaDongCua = _driver.FindElement(By.LinkText("Tra cứu giá đóng cửa CK cuối ngày"));
+                    btnTraCuuGiaDongCua.Click();
+                    Thread.Sleep(500);
+
+                    //formAccountCode
+                    IWebElement formAccountCode = _driver.FindElement(By.Name("formAccountCode"));
+                    formAccountCode.SendKeys(closePrice.MaCK);
+                    Thread.Sleep(100);
+
+                    //formFromDate
+                    IWebElement formFromDate = _driver.FindElement(By.Name("formFromDate"));
+                    formFromDate.Click();
+                    PickReactDateTime(closePrice.Date);
+                    Thread.Sleep(100);
+
+                    //formToDate
+                    IWebElement formToDate = _driver.FindElement(By.Name("formToDate"));
+                    formToDate.Click();
+                    PickReactDateTime(closePrice.Date);
+                    Thread.Sleep(100);
+
+                    //class="mx-2 mr-auto btn-search fz-14 align-self-end btn btn-primary"
+                    IWebElement searchSubmit = _driver.FindElement(By.CssSelector("button.mx-2.mr-auto.btn-search.fz-14.align-self-end.btn.btn-primary"));
+                    searchSubmit.Click();
+                    Thread.Sleep(1000);
+
+                    IWebElement table = _driver.FindElement(By.CssSelector("table.table.table-bordered"));
+                    var allrows = table.FindElements(By.TagName("tr"));
+
+                    if ( allrows.Count >= 2 )
+                    {
+                        // update lai gia (neu truoc do da co)
+                        var cells = allrows[1].FindElements(By.TagName("td"));
+                        var cell1 = cells[3];
+                        var acc2 = new Actions(_driver);
+                        var acts = acc2.DoubleClick(cell1);
+                        acts.Perform();
+                        Thread.Sleep(500);
+
+                        //formClosePrice
+                        IWebElement formClosePrice = _driver.FindElement(By.Name("formClosePrice"));
+                        formClosePrice.Clear();
+                        formClosePrice.SendKeys( (closePrice.GiaDongCua * 1000).ToString("N0") );
+                        Thread.Sleep(100);
+
+                        //fz-14 btn btn-success
+                        IWebElement btnSuccess = _driver.FindElement(By.CssSelector("button.fz-14.btn.btn-success"));
+                        btnSuccess.Click();
+                        Thread.Sleep(300);
+                    }
+                    else
+                    {
+                        // new gia moi
+                        //class="btn-action-add fz-14 align-self-end btn btn-primary"
+                        IWebElement btnAddNew = _driver.FindElement(By.CssSelector("button.btn-action-add.fz-14.align-self-end.btn.btn-primary"));
+                        btnAddNew.Click();
+                        Thread.Sleep(500);
+
+                        //formSymbol
+                        IWebElement formSymbol = _driver.FindElement(By.Name("formSymbol"));
+                        formSymbol.Clear();
+                        formSymbol.SendKeys(closePrice.MaCK);
+                        Thread.Sleep(100);
+
+                        //formCeilPrice
+                        IWebElement formCeilPrice = _driver.FindElement(By.Name("formCeilPrice"));
+                        formCeilPrice.Clear();
+                        formCeilPrice.SendKeys((closePrice.GiaTran * 1000).ToString("N0"));
+                        Thread.Sleep(100);
+
+                        //formFloorPrice
+                        IWebElement formFloorPrice = _driver.FindElement(By.Name("formFloorPrice"));
+                        formFloorPrice.Clear();
+                        formFloorPrice.SendKeys((closePrice.GiaSan * 1000).ToString("N0"));
+                        Thread.Sleep(100);
+
+                        //formRefPrice
+                        IWebElement formRefPrice = _driver.FindElement(By.Name("formRefPrice"));
+                        formRefPrice.Clear();
+                        formRefPrice.SendKeys((closePrice.GiaTC * 1000).ToString("N0"));
+                        Thread.Sleep(100);
+
+                        //formClosePrice
+                        IWebElement formClosePrice = _driver.FindElement(By.Name("formClosePrice"));
+                        formClosePrice.Clear();
+                        formClosePrice.SendKeys((closePrice.GiaDongCua * 1000).ToString("N0"));
+                        Thread.Sleep(100);
+
+                        //fz-14 btn btn-success
+                        IWebElement btnSuccess = _driver.FindElement(By.CssSelector("button.fz-14.btn.btn-success"));
+                        btnSuccess.Click();
+                        Thread.Sleep(300);
+                    }
                     return "";
                 }
                 catch (Exception ex)

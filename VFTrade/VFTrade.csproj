@@ -79,6 +79,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Account.cs" />
+    <Compile Include="ClosePriceInfo.cs" />
     <Compile Include="DepositInfo.cs" />
     <Compile Include="frmMain.cs">
       <SubType>Form</SubType>

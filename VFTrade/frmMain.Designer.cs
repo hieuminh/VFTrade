@@ -59,11 +59,22 @@
             this.dataGridViewTextBoxColumn12 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabPage3 = new System.Windows.Forms.TabPage();
             this.grbThaoTac = new System.Windows.Forms.GroupBox();
+            this.btnReset = new System.Windows.Forms.Button();
             this.cbxOrderDate = new System.Windows.Forms.ComboBox();
             this.btnPlaceOrderAllDay = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.dgvOrders = new System.Windows.Forms.DataGridView();
+            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderVolume = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.orderMatch = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.dataGridViewButtonColumn2 = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.txtLog = new System.Windows.Forms.TextBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -77,16 +88,21 @@
             this.txtFilePath = new System.Windows.Forms.TextBox();
             this.label1 = new System.Windows.Forms.Label();
             this.grbDataSource = new System.Windows.Forms.GroupBox();
-            this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewTextBoxColumn5 = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderStock = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderPrice = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderVolume = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.orderMatch = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.dataGridViewButtonColumn2 = new System.Windows.Forms.DataGridViewButtonColumn();
-            this.dataGridViewTextBoxColumn6 = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.tabPage4 = new System.Windows.Forms.TabPage();
+            this.dgvClosePrice = new System.Windows.Forms.DataGridView();
+            this.grbClosePrice = new System.Windows.Forms.GroupBox();
+            this.cbxCloseDate = new System.Windows.Forms.ComboBox();
+            this.btnUpdatePrice = new System.Windows.Forms.Button();
+            this.label5 = new System.Windows.Forms.Label();
+            this.closeID = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeDate = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeMaCK = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeGiaDongCua = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeGiaTran = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeGiaSan = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeGiaThamChieu = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.closeThucHien = new System.Windows.Forms.DataGridViewButtonColumn();
+            this.closeResult = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -101,6 +117,9 @@
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.grbDataSource.SuspendLayout();
+            this.tabPage4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClosePrice)).BeginInit();
+            this.grbClosePrice.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl1
@@ -111,6 +130,7 @@
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
             this.tabControl1.Controls.Add(this.tabPage3);
+            this.tabControl1.Controls.Add(this.tabPage4);
             this.tabControl1.Location = new System.Drawing.Point(0, 205);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -371,20 +391,33 @@
             // 
             // grbThaoTac
             // 
+            this.grbThaoTac.Controls.Add(this.btnReset);
             this.grbThaoTac.Controls.Add(this.cbxOrderDate);
             this.grbThaoTac.Controls.Add(this.btnPlaceOrderAllDay);
             this.grbThaoTac.Controls.Add(this.label4);
-            this.grbThaoTac.Location = new System.Drawing.Point(147, 3);
+            this.grbThaoTac.Location = new System.Drawing.Point(240, 3);
             this.grbThaoTac.Name = "grbThaoTac";
-            this.grbThaoTac.Size = new System.Drawing.Size(595, 55);
+            this.grbThaoTac.Size = new System.Drawing.Size(697, 55);
             this.grbThaoTac.TabIndex = 15;
             this.grbThaoTac.TabStop = false;
             this.grbThaoTac.Text = "Thao tác";
             // 
+            // btnReset
+            // 
+            this.btnReset.BackColor = System.Drawing.Color.Transparent;
+            this.btnReset.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnReset.Location = new System.Drawing.Point(468, 19);
+            this.btnReset.Name = "btnReset";
+            this.btnReset.Size = new System.Drawing.Size(117, 23);
+            this.btnReset.TabIndex = 15;
+            this.btnReset.Text = "Reset";
+            this.btnReset.UseVisualStyleBackColor = false;
+            this.btnReset.Click += new System.EventHandler(this.btnReset_Click);
+            // 
             // cbxOrderDate
             // 
             this.cbxOrderDate.FormattingEnabled = true;
-            this.cbxOrderDate.Location = new System.Drawing.Point(171, 19);
+            this.cbxOrderDate.Location = new System.Drawing.Point(169, 19);
             this.cbxOrderDate.Name = "cbxOrderDate";
             this.cbxOrderDate.Size = new System.Drawing.Size(156, 21);
             this.cbxOrderDate.TabIndex = 12;
@@ -393,7 +426,7 @@
             // 
             this.btnPlaceOrderAllDay.BackColor = System.Drawing.Color.Transparent;
             this.btnPlaceOrderAllDay.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.btnPlaceOrderAllDay.Location = new System.Drawing.Point(333, 19);
+            this.btnPlaceOrderAllDay.Location = new System.Drawing.Point(331, 19);
             this.btnPlaceOrderAllDay.Name = "btnPlaceOrderAllDay";
             this.btnPlaceOrderAllDay.Size = new System.Drawing.Size(131, 23);
             this.btnPlaceOrderAllDay.TabIndex = 14;
@@ -404,7 +437,7 @@
             // label4
             // 
             this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(109, 22);
+            this.label4.Location = new System.Drawing.Point(107, 22);
             this.label4.Name = "label4";
             this.label4.Size = new System.Drawing.Size(58, 13);
             this.label4.TabIndex = 14;
@@ -447,6 +480,83 @@
             this.dgvOrders.Size = new System.Drawing.Size(1183, 286);
             this.dgvOrders.TabIndex = 0;
             this.dgvOrders.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvOrders_CellContentClick);
+            // 
+            // dataGridViewTextBoxColumn3
+            // 
+            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewTextBoxColumn3.HeaderText = "STT";
+            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
+            this.dataGridViewTextBoxColumn3.ReadOnly = true;
+            this.dataGridViewTextBoxColumn3.Width = 50;
+            // 
+            // orderDate
+            // 
+            this.orderDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderDate.HeaderText = "Ngày";
+            this.orderDate.Name = "orderDate";
+            this.orderDate.ReadOnly = true;
+            this.orderDate.Width = 150;
+            // 
+            // dataGridViewTextBoxColumn4
+            // 
+            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewTextBoxColumn4.HeaderText = "User";
+            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
+            this.dataGridViewTextBoxColumn4.ReadOnly = true;
+            this.dataGridViewTextBoxColumn4.Width = 150;
+            // 
+            // dataGridViewTextBoxColumn5
+            // 
+            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewTextBoxColumn5.HeaderText = "Loại Lệnh";
+            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
+            this.dataGridViewTextBoxColumn5.Width = 70;
+            // 
+            // orderStock
+            // 
+            this.orderStock.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderStock.HeaderText = "Mã CK";
+            this.orderStock.Name = "orderStock";
+            this.orderStock.ReadOnly = true;
+            this.orderStock.Width = 80;
+            // 
+            // orderPrice
+            // 
+            this.orderPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderPrice.HeaderText = "Giá Đặt";
+            this.orderPrice.Name = "orderPrice";
+            this.orderPrice.ReadOnly = true;
+            this.orderPrice.Width = 80;
+            // 
+            // orderVolume
+            // 
+            this.orderVolume.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderVolume.HeaderText = "Khối lượng";
+            this.orderVolume.Name = "orderVolume";
+            this.orderVolume.ReadOnly = true;
+            this.orderVolume.Width = 110;
+            // 
+            // orderMatch
+            // 
+            this.orderMatch.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.orderMatch.HeaderText = "Giá Khớp";
+            this.orderMatch.Name = "orderMatch";
+            this.orderMatch.ReadOnly = true;
+            this.orderMatch.Width = 80;
+            // 
+            // dataGridViewButtonColumn2
+            // 
+            this.dataGridViewButtonColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.dataGridViewButtonColumn2.HeaderText = "Thực hiện";
+            this.dataGridViewButtonColumn2.Name = "dataGridViewButtonColumn2";
+            this.dataGridViewButtonColumn2.ReadOnly = true;
+            this.dataGridViewButtonColumn2.Width = 80;
+            // 
+            // dataGridViewTextBoxColumn6
+            // 
+            this.dataGridViewTextBoxColumn6.HeaderText = "Result";
+            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
+            this.dataGridViewTextBoxColumn6.ReadOnly = true;
             // 
             // groupBox2
             // 
@@ -581,82 +691,142 @@
             this.grbDataSource.TabStop = false;
             this.grbDataSource.Text = "Data Source";
             // 
-            // dataGridViewTextBoxColumn3
+            // tabPage4
             // 
-            this.dataGridViewTextBoxColumn3.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn3.HeaderText = "STT";
-            this.dataGridViewTextBoxColumn3.Name = "dataGridViewTextBoxColumn3";
-            this.dataGridViewTextBoxColumn3.ReadOnly = true;
-            this.dataGridViewTextBoxColumn3.Width = 50;
+            this.tabPage4.BackColor = System.Drawing.Color.White;
+            this.tabPage4.Controls.Add(this.grbClosePrice);
+            this.tabPage4.Controls.Add(this.dgvClosePrice);
+            this.tabPage4.Location = new System.Drawing.Point(4, 22);
+            this.tabPage4.Name = "tabPage4";
+            this.tabPage4.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage4.Size = new System.Drawing.Size(1189, 365);
+            this.tabPage4.TabIndex = 3;
+            this.tabPage4.Text = "Giá Đóng Cửa";
             // 
-            // orderDate
+            // dgvClosePrice
             // 
-            this.orderDate.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.orderDate.HeaderText = "Ngày";
-            this.orderDate.Name = "orderDate";
-            this.orderDate.ReadOnly = true;
-            this.orderDate.Width = 150;
+            this.dgvClosePrice.AllowUserToAddRows = false;
+            this.dgvClosePrice.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.dgvClosePrice.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
+            this.dgvClosePrice.BackgroundColor = System.Drawing.Color.White;
+            this.dgvClosePrice.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.dgvClosePrice.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
+            this.closeID,
+            this.closeDate,
+            this.closeMaCK,
+            this.closeGiaDongCua,
+            this.closeGiaTran,
+            this.closeGiaSan,
+            this.closeGiaThamChieu,
+            this.closeThucHien,
+            this.closeResult});
+            this.dgvClosePrice.Location = new System.Drawing.Point(0, 95);
+            this.dgvClosePrice.Name = "dgvClosePrice";
+            this.dgvClosePrice.RowHeadersVisible = false;
+            this.dgvClosePrice.Size = new System.Drawing.Size(1189, 270);
+            this.dgvClosePrice.TabIndex = 0;
+            this.dgvClosePrice.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvClosePrice_CellContentClick);
             // 
-            // dataGridViewTextBoxColumn4
+            // grbClosePrice
             // 
-            this.dataGridViewTextBoxColumn4.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn4.HeaderText = "User";
-            this.dataGridViewTextBoxColumn4.Name = "dataGridViewTextBoxColumn4";
-            this.dataGridViewTextBoxColumn4.ReadOnly = true;
-            this.dataGridViewTextBoxColumn4.Width = 150;
+            this.grbClosePrice.Controls.Add(this.cbxCloseDate);
+            this.grbClosePrice.Controls.Add(this.btnUpdatePrice);
+            this.grbClosePrice.Controls.Add(this.label5);
+            this.grbClosePrice.Location = new System.Drawing.Point(251, 17);
+            this.grbClosePrice.Name = "grbClosePrice";
+            this.grbClosePrice.Size = new System.Drawing.Size(591, 55);
+            this.grbClosePrice.TabIndex = 16;
+            this.grbClosePrice.TabStop = false;
+            this.grbClosePrice.Text = "Thao tác";
             // 
-            // dataGridViewTextBoxColumn5
+            // cbxCloseDate
             // 
-            this.dataGridViewTextBoxColumn5.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewTextBoxColumn5.HeaderText = "Loại Lệnh";
-            this.dataGridViewTextBoxColumn5.Name = "dataGridViewTextBoxColumn5";
-            this.dataGridViewTextBoxColumn5.Width = 70;
+            this.cbxCloseDate.FormattingEnabled = true;
+            this.cbxCloseDate.Location = new System.Drawing.Point(181, 19);
+            this.cbxCloseDate.Name = "cbxCloseDate";
+            this.cbxCloseDate.Size = new System.Drawing.Size(156, 21);
+            this.cbxCloseDate.TabIndex = 12;
             // 
-            // orderStock
+            // btnUpdatePrice
             // 
-            this.orderStock.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.orderStock.HeaderText = "Mã CK";
-            this.orderStock.Name = "orderStock";
-            this.orderStock.ReadOnly = true;
-            this.orderStock.Width = 80;
+            this.btnUpdatePrice.BackColor = System.Drawing.Color.Transparent;
+            this.btnUpdatePrice.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.btnUpdatePrice.Location = new System.Drawing.Point(343, 19);
+            this.btnUpdatePrice.Name = "btnUpdatePrice";
+            this.btnUpdatePrice.Size = new System.Drawing.Size(131, 23);
+            this.btnUpdatePrice.TabIndex = 14;
+            this.btnUpdatePrice.Text = "Cập nhật Giá";
+            this.btnUpdatePrice.UseVisualStyleBackColor = false;
+            this.btnUpdatePrice.Click += new System.EventHandler(this.btnUpdatePrice_Click);
             // 
-            // orderPrice
+            // label5
             // 
-            this.orderPrice.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.orderPrice.HeaderText = "Giá Đặt";
-            this.orderPrice.Name = "orderPrice";
-            this.orderPrice.ReadOnly = true;
-            this.orderPrice.Width = 80;
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(119, 22);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(58, 13);
+            this.label5.TabIndex = 14;
+            this.label5.Text = "Chọn ngày";
             // 
-            // orderVolume
+            // closeID
             // 
-            this.orderVolume.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.orderVolume.HeaderText = "Khối lượng";
-            this.orderVolume.Name = "orderVolume";
-            this.orderVolume.ReadOnly = true;
-            this.orderVolume.Width = 110;
+            this.closeID.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.closeID.HeaderText = "ID";
+            this.closeID.Name = "closeID";
+            this.closeID.ReadOnly = true;
+            this.closeID.Width = 60;
             // 
-            // orderMatch
+            // closeDate
             // 
-            this.orderMatch.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.orderMatch.HeaderText = "Giá Khớp";
-            this.orderMatch.Name = "orderMatch";
-            this.orderMatch.ReadOnly = true;
-            this.orderMatch.Width = 80;
+            this.closeDate.HeaderText = "Ngày";
+            this.closeDate.Name = "closeDate";
+            this.closeDate.ReadOnly = true;
             // 
-            // dataGridViewButtonColumn2
+            // closeMaCK
             // 
-            this.dataGridViewButtonColumn2.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
-            this.dataGridViewButtonColumn2.HeaderText = "Thực hiện";
-            this.dataGridViewButtonColumn2.Name = "dataGridViewButtonColumn2";
-            this.dataGridViewButtonColumn2.ReadOnly = true;
-            this.dataGridViewButtonColumn2.Width = 80;
+            this.closeMaCK.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.None;
+            this.closeMaCK.HeaderText = "Mã CK";
+            this.closeMaCK.Name = "closeMaCK";
+            this.closeMaCK.ReadOnly = true;
+            this.closeMaCK.Width = 90;
             // 
-            // dataGridViewTextBoxColumn6
+            // closeGiaDongCua
             // 
-            this.dataGridViewTextBoxColumn6.HeaderText = "Result";
-            this.dataGridViewTextBoxColumn6.Name = "dataGridViewTextBoxColumn6";
-            this.dataGridViewTextBoxColumn6.ReadOnly = true;
+            this.closeGiaDongCua.HeaderText = "Giá Đóng Cửa";
+            this.closeGiaDongCua.Name = "closeGiaDongCua";
+            this.closeGiaDongCua.ReadOnly = true;
+            // 
+            // closeGiaTran
+            // 
+            this.closeGiaTran.HeaderText = "Giá Trần";
+            this.closeGiaTran.Name = "closeGiaTran";
+            this.closeGiaTran.ReadOnly = true;
+            // 
+            // closeGiaSan
+            // 
+            this.closeGiaSan.HeaderText = "Giá Sàn";
+            this.closeGiaSan.Name = "closeGiaSan";
+            this.closeGiaSan.ReadOnly = true;
+            // 
+            // closeGiaThamChieu
+            // 
+            this.closeGiaThamChieu.HeaderText = "Giá TC";
+            this.closeGiaThamChieu.Name = "closeGiaThamChieu";
+            this.closeGiaThamChieu.ReadOnly = true;
+            // 
+            // closeThucHien
+            // 
+            this.closeThucHien.HeaderText = "Thực hiện";
+            this.closeThucHien.Name = "closeThucHien";
+            this.closeThucHien.ReadOnly = true;
+            // 
+            // closeResult
+            // 
+            this.closeResult.HeaderText = "Result";
+            this.closeResult.Name = "closeResult";
+            this.closeResult.ReadOnly = true;
             // 
             // frmMain
             // 
@@ -691,6 +861,10 @@
             this.groupBox1.PerformLayout();
             this.grbDataSource.ResumeLayout(false);
             this.grbDataSource.PerformLayout();
+            this.tabPage4.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.dgvClosePrice)).EndInit();
+            this.grbClosePrice.ResumeLayout(false);
+            this.grbClosePrice.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -755,6 +929,22 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn orderMatch;
         private System.Windows.Forms.DataGridViewButtonColumn dataGridViewButtonColumn2;
         private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn6;
+        private System.Windows.Forms.Button btnReset;
+        private System.Windows.Forms.TabPage tabPage4;
+        private System.Windows.Forms.DataGridView dgvClosePrice;
+        private System.Windows.Forms.GroupBox grbClosePrice;
+        private System.Windows.Forms.ComboBox cbxCloseDate;
+        private System.Windows.Forms.Button btnUpdatePrice;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeID;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeDate;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeMaCK;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeGiaDongCua;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeGiaTran;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeGiaSan;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeGiaThamChieu;
+        private System.Windows.Forms.DataGridViewButtonColumn closeThucHien;
+        private System.Windows.Forms.DataGridViewTextBoxColumn closeResult;
     }
 }
 
