@@ -166,7 +166,14 @@ namespace CreateAccount
                                 try
                                 {
                                     var order = new Order();
-                                    order.Date = reader.GetValue(1).ToString();
+                                    if (reader.GetValue(1) is DateTime)
+                                    {
+                                        order.Date = ((DateTime)reader.GetValue(1)).ToString("dd/MM/yyyy");
+                                    }
+                                    else
+                                    {
+                                        order.Date = reader.GetValue(1).ToString();
+                                    }
                                     order.SoTK = reader.GetValue(2).ToString();
                                     order.OrderType = reader.GetValue(3).ToString();
                                     order.MaCK = reader.GetValue(4).ToString();
@@ -237,7 +244,15 @@ namespace CreateAccount
                                 var info = new ClosePriceInfo();
                                 try
                                 {
-                                    info.Date = reader.GetValue(1).ToString();
+                                    if (reader.GetValue(1) is DateTime)
+                                    {
+                                        var dateTime = (DateTime)reader.GetValue(1);
+                                        info.Date = dateTime.ToString("dd/MM/yyyy");
+                                    }
+                                    else
+                                    {
+                                        info.Date = reader.GetValue(1).ToString();
+                                    }
                                     info.MaCK = reader.GetValue(2).ToString();
                                     info.GiaDongCua = decimal.Parse(reader.GetValue(3).ToString());
                                     try { info.GiaSan = decimal.Parse( reader.GetValue(4).ToString()); } catch { info.GiaSan = roundPrice(info.GiaDongCua * 0.93M); }

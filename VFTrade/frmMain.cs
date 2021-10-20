@@ -128,8 +128,17 @@ namespace VFTrade
                     });
                 }
 
-                ListDate.Sort();
+                ListDate.Sort(delegate (string x, string y) {
+                    var xx = x.Split('/');
+                    var yy = y.Split('/');
+                    for (int i = xx.Length - 1; i >= 0; --i)
+                    {
+                        if (xx[i] != yy[i]) return xx[i].CompareTo(yy[i]);
+                    }
+                    return 0;
+                });
                 cbxOrderDate.Items.Clear();
+                cbxOrderDate.Items.Add("Tất cả các ngày");
                 for( int i=0;i<ListDate.Count;++i)
                 {
                     if ( i == 0 || ListDate[i] != ListDate[i-1] )
@@ -165,8 +174,17 @@ namespace VFTrade
                     });
                 }
 
-                ListDate.Sort();
+                ListDate.Sort(delegate (string x, string y) {
+                    var xx = x.Split('/');
+                    var yy = y.Split('/');
+                    for( int i=xx.Length-1;i>=0;--i)
+                    {
+                        if (xx[i] != yy[i]) return xx[i].CompareTo(yy[i]);
+                    }
+                    return 0;
+                });
                 cbxCloseDate.Items.Clear();
+                cbxCloseDate.Items.Add("Tất cả các ngày");
                 for (int i = 0; i < ListDate.Count; ++i)
                 {
                     if (i == 0 || ListDate[i] != ListDate[i - 1])
@@ -609,6 +627,50 @@ namespace VFTrade
                     }));                    
                 });
             }
+        }
+
+        private void cbxCloseDate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string day = cbxCloseDate.SelectedItem.ToString();
+                if ( cbxCloseDate.SelectedIndex == 0 )
+                {
+                    for (int i = 0; i < dgvClosePrice.Rows.Count; ++i) dgvClosePrice.Rows[i].Visible = true;
+                }
+                else
+                {
+                    for (int i = 0; i < dgvClosePrice.Rows.Count; ++i)
+                    {
+                        string dayVal = dgvClosePrice[1, i].Value.ToString();
+                        if (dayVal == day) dgvClosePrice.Rows[i].Visible = true;
+                        else dgvClosePrice.Rows[i].Visible = false;
+                    }
+                }
+            }
+            catch { }
+        }
+
+        private void cbxOrderDate_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                string day = cbxOrderDate.SelectedItem.ToString();
+                if (cbxOrderDate.SelectedIndex == 0)
+                {
+                    for (int i = 0; i < dgvOrders.Rows.Count; ++i) dgvOrders.Rows[i].Visible = true;
+                }
+                else
+                {
+                    for (int i = 0; i < dgvOrders.Rows.Count; ++i)
+                    {
+                        string dayVal = dgvOrders[1, i].Value.ToString();
+                        if (dayVal == day) dgvOrders.Rows[i].Visible = true;
+                        else dgvOrders.Rows[i].Visible = false;
+                    }
+                }
+            }
+            catch { }
         }
     }
 }
