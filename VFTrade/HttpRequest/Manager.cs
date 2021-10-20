@@ -626,13 +626,31 @@ namespace VFTrade.HttpRequest
                     Thread.Sleep(350);
 
                     //formCTCK
+                    WebDriverWait wait = new WebDriverWait(_driver, new TimeSpan(0, 0, 3));
+                    wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.Name("formCTCK")));
+                    //_driver.Manage.wa
                     SelectElement formCTCK = new SelectElement(_driver.FindElement(By.Name("formCTCK")));
-                    formCTCK.SelectByText(order.CtyCK);
+                    try
+                    {
+                        formCTCK.SelectByText(order.CtyCK.Trim());
+                    }
+                    catch (NoSuchElementException ex)
+                    {
+                        return $"Khớp lệnh lỗi, không tồn tại cty CK '{order.CtyCK.Trim()}', kiểm tra lại dữ liệu";
+                    }
                     Thread.Sleep(100);
 
                     //formTKT
+                    wait.Until(ExpectedConditions.VisibilityOfAllElementsLocatedBy(By.Name("formTKT")));
                     SelectElement formTKT = new SelectElement(_driver.FindElement(By.Name("formTKT")));
-                    formTKT.SelectByText(order.TKTong);
+                    try
+                    {
+                        formTKT.SelectByText(order.TKTong);
+                    }
+                    catch (NoSuchElementException ex)
+                    {
+                        return $"Khớp lệnh lỗi, không tồn tại tk tổng {order.TKTong.Trim()} tại {order.CtyCK}, kiểm tra lại dữ liệu";
+                    }
                     Thread.Sleep(100);
 
                     //formOrderNo
@@ -643,12 +661,12 @@ namespace VFTrade.HttpRequest
                     //font-weight-bold fz-14 mx-2 btn btn-primary
                     IWebElement btnXacNhan = _driver.FindElement(By.CssSelector("button.font-weight-bold.fz-14.mx-2.btn.btn-primary"));
                     btnXacNhan.Click();
-                    Thread.Sleep(300);
+                    Thread.Sleep(500);
 
                     //class="mx-1 btn btn-success"
                     IWebElement btnKhop = cell9.FindElement(By.CssSelector("button.mx-1.btn.btn-success"));
                     btnKhop.Click();
-                    Thread.Sleep(300);
+                    Thread.Sleep(400);
 
                     //formMatchPrice
                     IWebElement formMatchPrice = _driver.FindElement(By.Name("formMatchPrice"));
@@ -664,6 +682,29 @@ namespace VFTrade.HttpRequest
                     IWebElement btnXacNhanKhop = _driver.FindElement(By.CssSelector("button.font-weight-bold.fz-14.mx-2.btn.btn-primary"));
                     btnXacNhanKhop.Click();
                     Thread.Sleep(300);
+
+                    for (int i = 0; i < 5; ++i)
+                    {
+                        try
+                        {
+                            //Toastify__toast-body 
+                            //Đặt lệnh thành công!
+                            IWebElement msgElement = _driver.FindElement(By.ClassName("Toastify__toast-body"));
+                            string msg = msgElement.Text.Trim();
+
+                            if ( !msg.Contains("thành công") && msg != "")
+                            {
+                                return msg;
+                            }
+                            else if (msg != "")
+                            {
+                                return "";
+                            }
+                        }
+                        catch { }
+                        Thread.Sleep(100);
+                    }
+                    return "";
 
                     /*
                     IWebElement msgElement = _driver.FindElement(By.ClassName("Toastify__toast-body"));

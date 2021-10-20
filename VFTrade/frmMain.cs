@@ -525,7 +525,7 @@ namespace VFTrade
             {
                 IsIndividualOrder = false;
                 int id = int.Parse(dgvOrders[0, e.RowIndex].Value.ToString() ) ;
-                var order = ListOrders[id];
+                var order = ListOrders[id-1];
                 Task.Factory.StartNew(() =>
                 {
                     this.Invoke(new ThreadStart(() =>
@@ -613,7 +613,7 @@ namespace VFTrade
             if (e.ColumnIndex == 7 && e.RowIndex >= 0 && e.RowIndex < dgvClosePrice.RowCount)
             {
                 int id = int.Parse(dgvClosePrice[0, e.RowIndex].Value.ToString());
-                var closePriceInfo = ListClosePrices[id];
+                var closePriceInfo = ListClosePrices[id-1];
                 Task.Factory.StartNew(() =>
                 {
                     this.Invoke(new ThreadStart(() =>
